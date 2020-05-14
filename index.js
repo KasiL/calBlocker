@@ -1,7 +1,7 @@
 // 2 days out - loop through this function 2x
 let nextWorkDay;
 //test date
-let tDate = new Date();
+let tDate = new Date(2020, 3, 24);
 
 function workWeekday(){	
 	
@@ -35,27 +35,27 @@ function workWeekday(){
 workWeekday();
 
 let eventCalendar0 = {
-	getTitle: 'Test 8:30',
+	getTitle: 'skip 5:30-6:30',
 	getStartTime: new Date( 'Mon Apr 27 2020 05:30:00 GMT-0700 (Pacific Daylight Time)'),
 	getEndTime: new Date( "Mon Apr 27 2020 06:30:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar1 = {
-	getTitle: 'Test 11-12',
+	getTitle: '1. 8-9',
 	getStartTime: new Date( "Mon Apr 27 2020 09:00:00 GMT-0700 (Pacific Daylight Time)"),
 	getEndTime: new Date( "Mon Apr 27 2020 11:00:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar2 = {
-	getTitle: 'Test 11-12',
+	getTitle: 'chained- skip to 12pm',
 	getStartTime: new Date( "Mon Apr 27 2020 11:00:00 GMT-0700 (Pacific Daylight Time)"),
 	getEndTime: new Date( "Mon Apr 27 2020 12:00:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar3 ={
-	getTitle: 'Test 1-3',
+	getTitle: '2. 12-1PM',
 	getStartTime: new Date( "Mon Apr 27 2020 13:00:00 GMT-0700 (Pacific Daylight Time)"),
 	getEndTime: new Date( "Mon Apr 27 2020 15:00:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar4 ={
-	getTitle: 'Test 3-4',
+	getTitle: 'chained skip 3-4',
 	getStartTime: new Date( "Mon Apr 27 2020 15:00:00 GMT-0700 (Pacific Daylight Time)"),
 	getEndTime: new Date( "Mon Apr 27 2020 16:00:00 GMT-0700 (Pacific Daylight Time)")
 };
@@ -78,28 +78,29 @@ class newEvent {
 };
 
 //check for chained
-function chained (x){
+function chained (){
 	// get the booked length
 	// check if there is a value for the +1
-	if(calBooked[x].getEndTime.getTime() == calBooked[x + 1].getStartTime.getTime()){
-		while(calBooked[x].getEndTime.getTime() == calBooked[x + 1].getStartTime.getTime()) {
-			console.log("chain match");
-			x++;
-		}
-	}
+	// while((calBooked[i] + 1) <= calBooked.length){
+		if( calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() )
+			// && 
+			// ((calBooked[i] + 1) <= calBooked.length))
+				console.log("chain match");
+				i++;
+		// }
+	// }
 	//update i
-	i = x;
 	// return evaluation of lastEnd
-	return calBooked[i].getStartTime;
+	return calBooked[i].getEndTime;
 }
 //create the new blocker event
-function blockEvent() {
-	cStartTime = cLastEnd;
-	cEndTime = calBooked[i].getEndTime;
-	//check chained
-	cLastEnd = chained(i);
-	calBlock.push( new newEvent(cStartTime, cEndTime));
-}
+// function blockEvent() {
+// 	cStartTime = cLastEnd;
+// 	cEndTime = calBooked[i].getEndTime;
+// 	//check chained
+// 	cLastEnd = chained(i);
+// 	calBlock.push( new newEvent(cStartTime, cEndTime));
+// }
 
 function calBlocker(){
 	//test for "blocked" dates i.e. on calendar and accepted
@@ -114,7 +115,7 @@ function calBlocker(){
 	}
 	// check if the end time is before 8AM then skip it	
 	if (calBooked[i].getEndTime < userStartTime) {
-		lastEnd = userStartTime;
+		cLastEnd = userStartTime;
 		i++;
 	}
 	// last array item start time is less that the user defined end time
@@ -125,22 +126,17 @@ function calBlocker(){
 			console.log(i);
 			//check chain, create start time, end time
 			cStartTime = userStartTime;
-			endTime = chained(i);
+			cEndTime = chained();
 			calBlock.push( new newEvent(cStartTime, cEndTime));
 		}
 		// booked event starts before end of user defined day
 		while( calBooked[i].getStartTime <= userEndTime) {
-			console.log("instance " + i +", 1. " + calBooked[i].getStartTime + "is less than or equal " + lastEnd + i);
+			console.log("instance " + i +", 1. " + calBooked[i].getStartTime + "is less than or equal " + cLastEnd + i);
 			cStartTime = cLastEnd;
-			cEndTime = calBooked[i].getEndTime;
-			//check chained
-			cLastEnd = chained(i);
+			cEndTime = calBooked[i].getStartTime;
+			cLastEnd = chained();
 			calBlock.push( new newEvent(cStartTime, cEndTime));
 			i++;
-			// console.log("startTime: " + calBlock);
-			// console.log("startTime: " + startTime.getHours() +":"+ startTime.getMinutes());
-			// console.log("endTime: " + endTime.getHours() +":"+ endTime.getMinutes());
-			// console.log("Array length: " + calBlock.length);
 		}
 	}
 };
