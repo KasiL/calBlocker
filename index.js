@@ -61,11 +61,12 @@ let eventCalendar4 ={
 };
 
 //array that will simulate the calendar booked on Google Calendar
+//globals
 let calBooked = [eventCalendar0, eventCalendar1, eventCalendar2, eventCalendar3, eventCalendar4];
 let calBlock = [];
 let userStartTime   = new Date(nextWorkDay.setHours(8));
 let userEndTime 	= new Date(nextWorkDay.setHours(17));
-
+let i 				= 0;
 
 //objects that will be pushed into the calendar
 class newEvent {
@@ -86,9 +87,18 @@ function chained (x){
 			x++;
 		}
 	}
+	//update i
 	i = x;
 	// return evaluation of lastEnd
 	return calBooked[i].getStartTime;
+}
+//create the new blocker event
+function blockEvent() {
+	cStartTime = cLastEnd;
+	cEndTime = calBooked[i].getEndTime;
+	//check chained
+	cLastEnd = chained(i);
+	calBlock.push( new newEvent(cStartTime, cEndTime));
 }
 
 function calBlocker(){
@@ -97,42 +107,41 @@ function calBlocker(){
 	let cStartTime 		= null;
 	let cEndTime 		= null;
 	let cLastEnd 		= null;
-	let i = 0;
 
 	//nothing booked
 	if(calBooked.length == 0) {
 		calBlock.push( new newEvent(userStartTime, userEndTime));
 	}
+	// check if the end time is before 8AM then skip it	
+	if (calBooked[i].getEndTime < userStartTime) {
+		lastEnd = userStartTime;
+		i++;
+	}
 	// last array item start time is less that the user defined end time
 	while( calBooked[i].getEndTime < userEndTime) {	
 		
-		//check if the end time is before 8AM then skip it	
-		if (calBooked[i].getEndTime < userStartTime) {
-			lastEnd = userStartTime;
-			i++;
-		}
-		//starts before  8 AM
+		// starts before  8 AM
 		if( calBooked[i].getStartTime <= userStartTime) {
-			console.log(lastEnd.getHours());
+			console.log(i);
 			//check chain, create start time, end time
 			cStartTime = userStartTime;
 			endTime = chained(i);
+			calBlock.push( new newEvent(cStartTime, cEndTime));
 		}
 		// booked event starts before end of user defined day
 		while( calBooked[i].getStartTime <= userEndTime) {
 			console.log("instance " + i +", 1. " + calBooked[i].getStartTime + "is less than or equal " + lastEnd + i);
 			cStartTime = cLastEnd;
-			cEndTime = chained(i);
+			cEndTime = calBooked[i].getEndTime;
 			//check chained
-			cLastEnd = calBooked[i].getEndTime;
+			cLastEnd = chained(i);
 			calBlock.push( new newEvent(cStartTime, cEndTime));
+			i++;
 			// console.log("startTime: " + calBlock);
 			// console.log("startTime: " + startTime.getHours() +":"+ startTime.getMinutes());
 			// console.log("endTime: " + endTime.getHours() +":"+ endTime.getMinutes());
-			i++;
-			console.log("Array length: " + calBlock.length);
+			// console.log("Array length: " + calBlock.length);
 		}
-		// console.log(i);
 	}
 };
 calBlocker();
