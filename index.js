@@ -66,7 +66,7 @@ let calBooked = [eventCalendar0, eventCalendar1, eventCalendar2, eventCalendar3,
 let calBlock = [];
 let userStartTime   = new Date(nextWorkDay.setHours(8));
 let userEndTime 	= new Date(nextWorkDay.setHours(17));
-let i 				= 0;
+// let i 				= 0;
 
 //objects that will be pushed into the calendar
 class newEvent {
@@ -81,18 +81,18 @@ class newEvent {
 function chained (){
 	// get the booked length
 	// check if there is a value for the +1
-	// while((calBooked[i] + 1) <= calBooked.length){
-		if( calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() )
-			// && 
-			// ((calBooked[i] + 1) <= calBooked.length))
-				console.log("chain match");
-				i++;
+	while((calBooked[i] + 1)){
+		if( calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() ){
+			i++;
+		}
 		// }
-	// }
+	}
 	//update i
-	// return evaluation of lastEnd
-	return calBooked[i].getEndTime;
-}
+	// return evaluation of lastEnd - changing to i because need chained in other places
+	// return calBooked[i].getEndTime;
+	return i;
+};
+
 //create the new blocker event
 // function blockEvent() {
 // 	cStartTime = cLastEnd;
@@ -140,4 +140,44 @@ function calBlocker(){
 		}
 	}
 };
-calBlocker();
+// calBlocker();
+let cLastEnd 		= null;
+let cStartTime 		= null;
+let cEndTime 		= null;
+
+while(cLastEnd > userEndTime) {
+	//loop through the set
+	console.log("im in the loop")
+	// check if the end time is before 8AM then skip it	
+	if ( calBooked[i].getEndTime < userStartTime) {
+		cLastEnd = userStartTime;
+	}
+	//starts before userStart & ends after userStart
+	//WIP 
+	if( calBooked[i].getStartTime <= userStartTime && calBooked[i].getEndTime > userStartTime) {
+		// check for chained i
+		chained();
+		cStartTime = calBooked[i].getEndTime;
+		cEndTime = calBooked[i +1].getStartTime;
+		cLastEnd = cEndTime;
+		calBlock.push( new newEvent(cStartTime, cEndTime));
+		i++;
+	}
+	//starts after userStart & ends before userEnd
+	if( calBooked[i].getStartTime > userStartTime && calBooked[i].getEndTime < userStartTime) {
+		console.log("instance " + i +", 1. " + calBooked[i].getStartTime + "is less than or equal " + cLastEnd + i);
+		cStartTime = cLastEnd;
+		cEndTime = calBooked[i].getStartTime;
+		chained();
+		cLastEnd = calBooked[i].getEndTime;
+		calBlock.push( new newEvent(cStartTime, cEndTime));
+		i++;
+	}
+	//starts after userEnd
+	// if ()
+	// check if the end time is before 8AM then skip it	
+	if( calBooked[i].getStartTime > userEndTime) {
+
+		break;
+	}
+};
