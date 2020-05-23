@@ -79,18 +79,10 @@ class newEvent {
 
 //check for chained
 function chained (){
-	if(calBooked[i] == calBooked.length){
-		return i;			
-	}
 	// check if there is a value for the +1
-	else if(calBooked[i] + 1 <= calBooked.length){
-		while( calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() ){
-			i++;
-		}
-	} 
-	//update i
-	// return evaluation of lastEnd - changing to i because need chained in other places
-	// return calBooked[i].getEndTime;
+	while( i+1 < calBooked.length && calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() ){
+		i++;
+	}
 	return i;
 };
 
@@ -154,21 +146,24 @@ let cEndTime 		= null;
 		cLastEnd = userStartTime;
 		i++
 	}
-	console.log('in the function');
+	//last entry is less than endtime
 	while(cLastEnd <= userEndTime) {
-		//end of booked time
+		//end of booked time array
 		if(calBooked[i] == calBooked.length){
-
+			cStartTime	= cLastEnd;
+			cEndTime	= userEndTime;
+			calBlock.push( new newEvent(cStartTime, cEndTime));
+			break;
 		}
 		
 		//starts before userStart (8AM) & ends after userStart (8AM)
-		//WIP 
-		if( calBooked[i].getStartTime <= userStartTime && calBooked[i].getEndTime > userStartTime) {
+		else if( calBooked[i].getStartTime <= userStartTime && calBooked[i].getEndTime > userStartTime) {
 			// check for chained i
 			chained();
-			cStartTime = calBooked[i].getEndTime;
-			cEndTime = calBooked[i +1].getStartTime;
-			cLastEnd = cEndTime;
+			cStartTime	= calBooked[i].getEndTime;
+			cEndTime	= calBooked[i +1].getStartTime;
+			cLastEnd	= cEndTime;
+			i++;
 		}
 		//starts after userStart (8) & ends before userEnd (5PM)
 		else if( calBooked[i].getStartTime > userStartTime && calBooked[i].getEndTime > userStartTime) {
@@ -177,20 +172,20 @@ let cEndTime 		= null;
 			cEndTime = calBooked[i].getStartTime;
 			chained();
 			cLastEnd = calBooked[i].getEndTime;
+			i++;
 		}
 		//wrap this in a function
 		calBlock.push( new newEvent(cStartTime, cEndTime));
-		i++;
-
+		
 		//starts before userEnd & ends after
-		if (calBooked[i].getStartTime > userStartTime && calBooked[i].getEndTime >= userEndTime) {
+		if ( calBooked[i].getStartTime >= userEndTime ) {
 			console.log(`${i}<- starts before 5 & ends at 5`);
 			break;
 		}
 		// check if the end time is after userEnd (5PM)
-		if( calBooked[i].getStartTime >= userEndTime) {
-			console.log('starts after 5');
-			break;
-		}
+		// if( calBooked[i].getStartTime >= userEndTime) {
+		// 	console.log('starts after 5');
+		// 	break;
+		// }
 	};
 })();
