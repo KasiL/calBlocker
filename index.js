@@ -79,14 +79,15 @@ class newEvent {
 
 //check for chained
 function chained (){
-	// get the booked length
+	if(calBooked[i] == calBooked.length){
+		return i;			
+	}
 	// check if there is a value for the +1
-	while((calBooked[i] + 1)){
-		if( calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() ){
+	else if(calBooked[i] + 1 <= calBooked.length){
+		while( calBooked[i].getEndTime.getTime() == calBooked[i + 1].getStartTime.getTime() ){
 			i++;
 		}
-		// }
-	}
+	} 
 	//update i
 	// return evaluation of lastEnd - changing to i because need chained in other places
 	// return calBooked[i].getEndTime;
@@ -141,43 +142,55 @@ function calBlocker(){
 	}
 };
 // calBlocker();
+
+var i				= 0;
+( function() {
 let cLastEnd 		= null;
 let cStartTime 		= null;
 let cEndTime 		= null;
 
-while(cLastEnd > userEndTime) {
-	//loop through the set
-	console.log("im in the loop")
 	// check if the end time is before 8AM then skip it	
 	if ( calBooked[i].getEndTime < userStartTime) {
 		cLastEnd = userStartTime;
+		i++
 	}
-	//starts before userStart & ends after userStart
-	//WIP 
-	if( calBooked[i].getStartTime <= userStartTime && calBooked[i].getEndTime > userStartTime) {
-		// check for chained i
-		chained();
-		cStartTime = calBooked[i].getEndTime;
-		cEndTime = calBooked[i +1].getStartTime;
-		cLastEnd = cEndTime;
-		calBlock.push( new newEvent(cStartTime, cEndTime));
-		i++;
-	}
-	//starts after userStart & ends before userEnd
-	if( calBooked[i].getStartTime > userStartTime && calBooked[i].getEndTime < userStartTime) {
-		console.log("instance " + i +", 1. " + calBooked[i].getStartTime + "is less than or equal " + cLastEnd + i);
-		cStartTime = cLastEnd;
-		cEndTime = calBooked[i].getStartTime;
-		chained();
-		cLastEnd = calBooked[i].getEndTime;
-		calBlock.push( new newEvent(cStartTime, cEndTime));
-		i++;
-	}
-	//starts after userEnd
-	// if ()
-	// check if the end time is before 8AM then skip it	
-	if( calBooked[i].getStartTime > userEndTime) {
+	console.log('in the function');
+	while(cLastEnd <= userEndTime) {
+		//end of booked time
+		if(calBooked[i] == calBooked.length){
 
-		break;
-	}
-};
+		}
+		
+		//starts before userStart (8AM) & ends after userStart (8AM)
+		//WIP 
+		if( calBooked[i].getStartTime <= userStartTime && calBooked[i].getEndTime > userStartTime) {
+			// check for chained i
+			chained();
+			cStartTime = calBooked[i].getEndTime;
+			cEndTime = calBooked[i +1].getStartTime;
+			cLastEnd = cEndTime;
+		}
+		//starts after userStart (8) & ends before userEnd (5PM)
+		else if( calBooked[i].getStartTime > userStartTime && calBooked[i].getEndTime > userStartTime) {
+			console.log(`instance ${i}, 1. " ${calBooked[i].getStartTime} + "is less than or equal " + ${cLastEnd}`);
+			cStartTime = cLastEnd;
+			cEndTime = calBooked[i].getStartTime;
+			chained();
+			cLastEnd = calBooked[i].getEndTime;
+		}
+		//wrap this in a function
+		calBlock.push( new newEvent(cStartTime, cEndTime));
+		i++;
+
+		//starts before userEnd & ends after
+		if (calBooked[i].getStartTime > userStartTime && calBooked[i].getEndTime >= userEndTime) {
+			console.log(`${i}<- starts before 5 & ends at 5`);
+			break;
+		}
+		// check if the end time is after userEnd (5PM)
+		if( calBooked[i].getStartTime >= userEndTime) {
+			console.log('starts after 5');
+			break;
+		}
+	};
+})();
