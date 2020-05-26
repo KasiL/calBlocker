@@ -86,57 +86,8 @@ function chained (){
 	return i;
 };
 
-//create the new blocker event
-// function blockEvent() {
-// 	cStartTime = cLastEnd;
-// 	cEndTime = calBooked[i].getEndTime;
-// 	//check chained
-// 	cLastEnd = chained(i);
-// 	calBlock.push( new newEvent(cStartTime, cEndTime));
-// }
 
-function calBlocker(){
-	//test for "blocked" dates i.e. on calendar and accepted
-	//Replace the start & end with user choosen variables 
-	let cStartTime 		= null;
-	let cEndTime 		= null;
-	let cLastEnd 		= null;
-
-	//nothing booked
-	if(calBooked.length == 0) {
-		calBlock.push( new newEvent(userStartTime, userEndTime));
-	}
-	// check if the end time is before 8AM then skip it	
-	if (calBooked[i].getEndTime < userStartTime) {
-		cLastEnd = userStartTime;
-		i++;
-	}
-	// last array item start time is less that the user defined end time
-	while( calBooked[i].getEndTime < userEndTime) {	
-		
-		// starts before  8 AM
-		if( calBooked[i].getStartTime <= userStartTime) {
-			console.log(i);
-			//check chain, create start time, end time
-			cStartTime = userStartTime;
-			cEndTime = chained();
-			calBlock.push( new newEvent(cStartTime, cEndTime));
-		}
-		// booked event starts before end of user defined day
-		while( calBooked[i].getStartTime <= userEndTime) {
-			console.log("instance " + i +", 1. " + calBooked[i].getStartTime + "is less than or equal " + cLastEnd + i);
-			cStartTime = cLastEnd;
-			cEndTime = calBooked[i].getStartTime;
-			cLastEnd = chained();
-			calBlock.push( new newEvent(cStartTime, cEndTime));
-			i++;
-		}
-	}
-};
-// calBlocker();
-
-
-//trying a for loop
+// Loop through the booked Array. Stop when past userEndTime
 ( function() {
 	let cLastEnd 		= null;
 	let cStartTime 		= null;
@@ -153,13 +104,11 @@ function calBlocker(){
 			cLastEnd = userStartTime;
 			i++
 		}
+		//consolidate breaks
 		//end of booked entries & less than 
-		if(calBooked[i] == calBooked.length){
-			// break out of the loop and fill in the time
-				// skip this part
-				// cStartTime	= cLastEnd;
-				// cEndTime	= userEndTime;
-				// calBlock.push( new newEvent(cStartTime, cEndTime));
+		if(	calBooked[i] == calBooked.length || 		
+			//booked is equal or greater than 5PM
+			cLastEnd >= userEndTime ) {
 			break;
 		}
 		
@@ -183,18 +132,6 @@ function calBlocker(){
 		
 		//wrap this in a function
 		calBlock.push( new newEvent(cStartTime, cEndTime));
-		
-		//booked is equal or greater than 5PM
-		if ( calBooked[i].endTime >= userEndTime ) {
-			console.log("check this out");
-			cStartTime = cLastEnd;
-			cEndTime = calBooked[i].getStartTime;
-		}
-		//starts before userEnd & ends after
-		if ( calBooked[i].getStartTime >= userEndTime && calBooked[i].getEndTime > userEndTime ) {
-			console.log(`${i}<- starts before 5 & ends at 5`);
-			break;
-		}
 	}
 	if (cLastEnd <= userEndTime){
 		console.log("i am out of hte loop check for this");
