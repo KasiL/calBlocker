@@ -134,7 +134,7 @@ function chained (){
 		calBlock.push( new newEvent(cStartTime, cEndTime));
 	}
 	if (cLastEnd <= userEndTime){
-		console.log("i am out of hte loop check for this");
+		console.log("i am out of the loop check for this");
 		cStartTime = cLastEnd;
 		cEndTime = userEndTime;
 		calBlock.push( new newEvent(cStartTime, cEndTime));
