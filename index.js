@@ -1,48 +1,64 @@
 // 2 days out - loop through this function 2x
 let nextWorkDay;
-//test date
-let tDate = new Date(2020, 3, 24);
 
 function workWeekday(){	
+	//get todays date
+	let today = new Date();
+	//get tomorrow, script needs 2 days out
+	let tDate = new Date(today);
+	// set tDate to tomorrow
+	tDate.setDate(tDate.getDate() + 1);
 	
 	switch(tDate.getDay()){
 		  // Sunday - Saturday : 0 - 6 
 		case 0:
-			//Sun
+			//Sun -> Tues = 2
+			// nextWorkDay = new Date(tDate.setDate(tDate.getDate() +1));
+			// break;
 		case 1:
-			//Mon
+			//Mon -> Wed = 2
 		case 2:
-			//Tues
+			//Tues ->Thurs = 2
 		case 3:
-			// Wed
+			// Wed -> Fri = 2
 		case 4:
-			// Thurs
 			nextWorkDay = new Date(tDate.setDate(tDate.getDate() +1));
-			// console.log(nextWorkDay.getDay() + " weekday . Next work day: " + nextWorkDay.getDate());
-		break;
+			// console.log("Next work day: " + nextWorkDay.getDay());
+			break;
+			// Thurs -> Mon = 3
 		case 5:
-			// Fri
+			// Fri -> Tues = 4
 			nextWorkDay = new Date(tDate.setDate(tDate.getDate() +1));
-			// console.log("Fri " + nextWorkDay);
+			// console.log("fri: " + nextWorkDay.getDay());
+				
 		case 6: 
-			// Sat
+			// Sat -> Tues
 			nextWorkDay = new Date(tDate.setDate(tDate.getDate() +2));
 			// console.log("Sat: " + nextWorkDay.getDay() + " weekend scenario. Next work day: " + nextWorkDay.getDate());
-		break;
 	}
 	return nextWorkDay;
 }
 workWeekday();
 
+//get an array of events from the next work day
+function getEvents() {
+/* 	1. Get the next work day
+	2. Get all the events from that day
+	3. fill in the gaps
+	4. log the additions
+	5. Repeat 1-4 for the following workday
+*/
+}
+
 let eventCalendar0 = {
 	getTitle: 'skip 5:30-6:30',
-	getStartTime: new Date( 'Mon Apr 27 2020 05:30:00 GMT-0700 (Pacific Daylight Time)'),
+	getStartTime: new Date( 'Mon Apr 27 2020 06:30:00 GMT-0700 (Pacific Daylight Time)'),
 	getEndTime: new Date( "Mon Apr 27 2020 07:30:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar1 = {
 	getTitle: '1. 8-9',
-	getStartTime: new Date( "Mon Apr 27 2020 08:30:00 GMT-0700 (Pacific Daylight Time)"),
-	getEndTime: new Date( "Mon Apr 27 2020 9:00:00 GMT-0700 (Pacific Daylight Time)"),
+	getStartTime: new Date( "Mon Apr 27 2020 09:30:00 GMT-0700 (Pacific Daylight Time)"),
+	getEndTime: new Date( "Mon Apr 27 2020 10:00:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar2 = {
 	getTitle: 'chained- skip to 12pm',
@@ -52,7 +68,7 @@ let eventCalendar2 = {
 let eventCalendar3 ={
 	getTitle: '2. 12-1PM',
 	getStartTime: new Date( "Mon Apr 27 2020 13:00:00 GMT-0700 (Pacific Daylight Time)"),
-	getEndTime: new Date( "Mon Apr 27 2020 18:00:00 GMT-0700 (Pacific Daylight Time)"),
+	getEndTime: new Date( "Mon Apr 27 2020 14:00:00 GMT-0700 (Pacific Daylight Time)"),
 };
 let eventCalendar4 ={
 	getTitle: 'chained skip 3-4',
@@ -64,14 +80,14 @@ let eventCalendar4 ={
 //globals
 let calBooked 		= [eventCalendar0, eventCalendar1, eventCalendar2, eventCalendar3, eventCalendar4];
 let calBlock 		= [];
-let userStartTime   = new Date(nextWorkDay.setHours(8));
-let userEndTime 	= new Date(nextWorkDay.setHours(17));
+let userStartTime   = new Date(nextWorkDay.setHours(08, 00, 00));
+let userEndTime 	= new Date(nextWorkDay.setHours(17, 00, 00));
 let i 				= 0;
 
 //objects that will be pushed into the calendar
 class newEvent {
 	constructor(st, sp) {
-		this.title = "Admin - Don't Block Update this to a user input";
+		this.title = "Admin - Don't Block: Update this to a user input";
 		this.startTime = st;
 		this.endTime = sp;
 	}
@@ -89,7 +105,7 @@ function chained (){
 
 // Loop through the booked Array. Stop when past userEndTime
 ( function() {
-	let cLastEnd 		= null;
+	let cLastEnd 		= userStartTime;
 	let cStartTime 		= null;
 	let cEndTime 		= null;
 
